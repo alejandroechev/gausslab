@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GaussLab — Gaussian Beam Optics Guide</title>
+<style>
+  :root { --bg: #f5f5f7; --fg: #1d1d1f; --bg2: #fff; --border: #d2d2d7; --accent: #0071e3; --accent2: #bf5af2; --code-bg: #f0f0f3; --hero-bg: linear-gradient(135deg, #0071e3, #bf5af2); }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1c1c1e; --fg: #f5f5f7; --bg2: #2c2c2e; --border: #48484a; --accent: #64d2ff; --accent2: #bf5af2; --code-bg: #2c2c2e; --hero-bg: linear-gradient(135deg, #0a3d6b, #6b2fa0); }
+  }
+  [data-theme="light"] { --bg: #f5f5f7; --fg: #1d1d1f; --bg2: #fff; --border: #d2d2d7; --accent: #0071e3; --accent2: #bf5af2; --code-bg: #f0f0f3; --hero-bg: linear-gradient(135deg, #0071e3, #bf5af2); }
+  [data-theme="dark"] { --bg: #1c1c1e; --fg: #f5f5f7; --bg2: #2c2c2e; --border: #48484a; --accent: #64d2ff; --accent2: #bf5af2; --code-bg: #2c2c2e; --hero-bg: linear-gradient(135deg, #0a3d6b, #6b2fa0); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.7; }
+  .hero { background: var(--hero-bg); color: #fff; padding: 60px 20px; text-align: center; }
+  .hero h1 { font-size: 2.4em; margin-bottom: 8px; }
+  .hero p { font-size: 1.2em; opacity: 0.9; }
+  .container { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+  .back-link { display: inline-block; margin-bottom: 32px; color: var(--accent); text-decoration: none; font-weight: 500; }
+  .back-link:hover { text-decoration: underline; }
+  h2 { font-size: 1.5em; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.15em; margin: 24px 0 10px; color: var(--accent2); }
+  p, li { margin-bottom: 12px; }
+  ul, ol { padding-left: 24px; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
+  .equation { background: var(--code-bg); border-left: 3px solid var(--accent); padding: 12px 16px; margin: 16px 0; border-radius: 4px; font-family: 'Cambria Math', 'Latin Modern Math', Georgia, serif; font-size: 1.05em; overflow-x: auto; }
+  .matrix { display: inline-block; border-left: 2px solid var(--fg); border-right: 2px solid var(--fg); padding: 4px 10px; margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  th { background: var(--code-bg); font-weight: 600; }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 16px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; margin: 12px 0; }
+  .step-num { background: var(--accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85em; flex-shrink: 0; }
+  .glossary dt { font-weight: 600; color: var(--accent); margin-top: 12px; }
+  .glossary dd { margin-left: 20px; margin-bottom: 8px; }
+  .theme-toggle { position: fixed; top: 16px; right: 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; cursor: pointer; font-size: 1.1em; z-index: 100; }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+
+<div class="hero">
+  <h1>🔬 GaussLab</h1>
+  <p>Free, browser-based Gaussian beam propagation using ABCD matrices</p>
+</div>
+
+<div class="container">
+<a href="/" class="back-link">← Back to GaussLab</a>
+
+<!-- 1. What is a Gaussian Beam? -->
+<h2>What is a Gaussian Beam?</h2>
+<p>A <strong>Gaussian beam</strong> is the fundamental transverse electromagnetic mode (TEM₀₀) produced by most lasers. Unlike geometric ray optics — which treats light as infinitely thin rays — a Gaussian beam has a smooth, bell-shaped intensity profile described by:</p>
+<div class="equation">I(r, z) = I₀ × (w₀ / w(z))² × exp(−2r² / w(z)²)</div>
+<p>where <em>r</em> is the radial distance from the beam axis and <em>w(z)</em> is the beam radius at position <em>z</em>. The beam has a finite width, a well-defined focus (the <strong>beam waist</strong>), and spreads due to diffraction as it propagates.</p>
+<p>This diffraction-based description is essential for laser optics. Geometric ray optics predicts that a perfect lens focuses light to an infinitely small point — Gaussian beam theory correctly predicts the actual finite spot size.</p>
+
+<!-- 2. Key Beam Parameters -->
+<h2>Key Beam Parameters</h2>
+
+<h3>Beam Waist (w₀)</h3>
+<p>The minimum beam radius, where the beam is narrowest. At the waist, the wavefront is flat (radius of curvature R → ∞). The beam waist defines the tightest focus the beam achieves.</p>
+
+<h3>Rayleigh Range (z<sub>R</sub>)</h3>
+<div class="equation">z<sub>R</sub> = π w₀² n / λ</div>
+<p>The distance from the waist where the beam radius grows by a factor of √2 (beam area doubles). Within ±z<sub>R</sub> of the waist, the beam is considered "collimated." A larger waist or shorter wavelength produces a longer Rayleigh range.</p>
+
+<h3>Beam Radius w(z)</h3>
+<div class="equation">w(z) = w₀ √(1 + (z / z<sub>R</sub>)²)</div>
+<p>The 1/e² intensity radius at position <em>z</em> relative to the waist. The beam radius grows hyperbolically, approaching linear divergence in the far field.</p>
+
+<h3>Divergence Angle (θ)</h3>
+<div class="equation">θ = λ / (π w₀ n)</div>
+<p>The half-angle of the beam spread in the far field (z ≫ z<sub>R</sub>). Smaller waists produce faster divergence — the beam waist–divergence product is a constant for a given wavelength.</p>
+
+<!-- 3. The Complex Beam Parameter -->
+<h2>The Complex Beam Parameter</h2>
+<p>The <strong>complex beam parameter</strong> <em>q</em> elegantly encodes both the beam radius and wavefront curvature in a single complex number:</p>
+<div class="equation">q = z + i z<sub>R</sub></div>
+<p>where <em>z</em> is the distance from the waist and <em>z<sub>R</sub></em> is the Rayleigh range. The reciprocal form separates the physical quantities:</p>
+<div class="equation">1/q = 1/R(z) − i λ / (π n w(z)²)</div>
+<p>The real part gives the <strong>wavefront curvature</strong> (1/R), and the imaginary part gives the <strong>beam radius</strong> (w). This representation is powerful because optical transformations become simple algebraic operations on <em>q</em>, rather than separate tracking of w and R through each element.</p>
+
+<!-- 4. ABCD Ray Transfer Matrices -->
+<h2>ABCD Ray Transfer Matrices</h2>
+<p>Each optical element is represented by a 2×2 matrix that describes how it transforms a ray. The same matrices that describe geometric ray transfer also govern Gaussian beam propagation through the complex beam parameter.</p>
+
+<table>
+  <thead><tr><th>Element</th><th>Matrix</th><th>Parameters</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Free space</strong></td>
+      <td><span class="matrix">1 &nbsp; d<br>0 &nbsp; 1</span></td>
+      <td><em>d</em> = propagation distance</td>
+    </tr>
+    <tr>
+      <td><strong>Thin lens</strong></td>
+      <td><span class="matrix">&nbsp;1 &nbsp;&nbsp;&nbsp; 0<br>−1/f &nbsp; 1</span></td>
+      <td><em>f</em> = focal length (+converging, −diverging)</td>
+    </tr>
+    <tr>
+      <td><strong>Curved mirror</strong></td>
+      <td><span class="matrix">&nbsp;1 &nbsp;&nbsp;&nbsp; 0<br>−2/R &nbsp; 1</span></td>
+      <td><em>R</em> = radius of curvature (+concave, −convex)</td>
+    </tr>
+    <tr>
+      <td><strong>Flat interface</strong></td>
+      <td><span class="matrix">1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br>0 &nbsp; n₁/n₂</span></td>
+      <td><em>n₁</em>, <em>n₂</em> = refractive indices</td>
+    </tr>
+  </tbody>
+</table>
+<p>For a system with multiple elements, the total system matrix is the product of individual matrices <strong>in reverse order</strong> (right to left): M = Mₙ × … × M₂ × M₁.</p>
+
+<!-- 5. Beam Transformation -->
+<h2>Beam Transformation</h2>
+<p>Given a system matrix with elements A, B, C, D, the output complex beam parameter is:</p>
+<div class="equation">q' = (A q + B) / (C q + D)</div>
+<p>This single equation replaces what would otherwise be tedious separate calculations of beam radius and wavefront curvature through each element.</p>
+
+<h3>Extracting beam parameters from q'</h3>
+<p>After computing the transformed <em>q'</em>:</p>
+<ul>
+  <li><strong>Beam radius:</strong> <code>w² = −λ / (π × Im(1/q'))</code></li>
+  <li><strong>Wavefront curvature:</strong> <code>R = 1 / Re(1/q')</code></li>
+  <li><strong>New waist location:</strong> where Im(1/q') is minimized (R → ∞)</li>
+</ul>
+
+<!-- 6. System Design -->
+<h2>System Design Examples</h2>
+
+<div class="card">
+  <h3>Beam Expander (Galilean)</h3>
+  <p>A negative lens followed by a positive lens separated by <em>f₁ + f₂</em>. Magnification = −f₂/f₁. Expands the beam while reducing divergence — essential for long-distance propagation and filling large optics.</p>
+</div>
+
+<div class="card">
+  <h3>Telescope (Keplerian)</h3>
+  <p>Two positive lenses separated by <em>f₁ + f₂</em>. Same magnification formula, but produces an inverted image and has an internal focus. GaussLab models both configurations accurately.</p>
+</div>
+
+<div class="card">
+  <h3>Focusing System</h3>
+  <p>A single lens focuses a collimated beam to a waist at approximately one focal length. The focused spot size is <code>w₀' ≈ λf / (πw)</code>, where <em>w</em> is the input beam radius at the lens. Shorter focal lengths and larger input beams produce smaller spots.</p>
+</div>
+
+<!-- 7. Common Applications -->
+<h2>Common Applications</h2>
+<ul>
+  <li><strong>Laser cutting & welding:</strong> Beam delivery optics design — focusing lenses, beam expanders, and collimators for industrial CO₂ and fiber lasers.</li>
+  <li><strong>Fiber coupling:</strong> Matching a laser beam's mode to a fiber's acceptance, maximizing coupling efficiency by matching waist size and position.</li>
+  <li><strong>Microscopy:</strong> Objective lens design and fluorescence excitation — computing diffraction-limited spot sizes for confocal and two-photon systems.</li>
+  <li><strong>Telecommunications:</strong> Free-space optical links, beam divergence budgets over distance, and collimator design for fiber-to-free-space coupling.</li>
+  <li><strong>LIDAR:</strong> Transmitter beam divergence, receiver collection optics, and range-dependent spot size estimation.</li>
+  <li><strong>Laser shows & displays:</strong> Beam scanning systems, galvo mirror configurations, and projection optics.</li>
+</ul>
+
+<!-- 8. How to Use GaussLab -->
+<h2>How to Use GaussLab</h2>
+
+<div class="step"><div class="step-num">1</div><div><strong>Set the wavelength</strong> — Choose a preset (HeNe 633 nm, Nd:YAG 1064 nm) or enter a custom wavelength.</div></div>
+<div class="step"><div class="step-num">2</div><div><strong>Define the input beam</strong> — Enter the beam waist radius (w₀) and the waist position along the optical axis.</div></div>
+<div class="step"><div class="step-num">3</div><div><strong>Add optical elements</strong> — Build your system by adding free space, thin lenses, curved mirrors, and flat interfaces. Specify distances and focal lengths.</div></div>
+<div class="step"><div class="step-num">4</div><div><strong>Read the output</strong> — The diagram shows beam radius w(z) through the system. The results panel displays the output beam waist, its position, Rayleigh range, and divergence.</div></div>
+<div class="step"><div class="step-num">5</div><div><strong>Export</strong> — Download propagation data as CSV for further analysis, or save the diagram as PNG for reports and publications.</div></div>
+
+<!-- 9. Glossary -->
+<h2>Glossary</h2>
+<dl class="glossary">
+  <dt>TEM₀₀</dt>
+  <dd>The fundamental transverse electromagnetic mode — a perfectly Gaussian intensity profile with no nulls or higher-order structure.</dd>
+
+  <dt>Beam waist (w₀)</dt>
+  <dd>The minimum 1/e² intensity radius of the beam, where the wavefront is flat.</dd>
+
+  <dt>Rayleigh range (z<sub>R</sub>)</dt>
+  <dd>Distance from the waist at which the beam area doubles: z<sub>R</sub> = πw₀²n/λ. Defines the "depth of focus."</dd>
+
+  <dt>Divergence (θ)</dt>
+  <dd>The far-field half-angle of beam spread: θ = λ/(πw₀n). Inversely proportional to waist size.</dd>
+
+  <dt>Complex beam parameter (q)</dt>
+  <dd>q = z + iz<sub>R</sub>. Encodes beam radius and wavefront curvature in a single complex number for algebraic transformations.</dd>
+
+  <dt>ABCD matrix</dt>
+  <dd>A 2×2 ray transfer matrix representing an optical element. Enables cascaded transformations by matrix multiplication.</dd>
+
+  <dt>Wavefront curvature (R)</dt>
+  <dd>The radius of curvature of the beam's phase front. R = ∞ at the waist, decreases to a minimum at z = z<sub>R</sub>, then grows linearly.</dd>
+
+  <dt>Magnification</dt>
+  <dd>The ratio of output to input beam waist: M = w₀'/w₀. Determined by the optical system's matrix elements.</dd>
+</dl>
+
+<!-- 10. References -->
+<h2>References</h2>
+<ol>
+  <li>B. E. A. Saleh and M. C. Teich, <em>Fundamentals of Photonics</em>, 3rd ed., Wiley, 2019. — Chapters 1–3 cover Gaussian beams and ABCD matrices in detail.</li>
+  <li>E. Hecht, <em>Optics</em>, 5th ed., Pearson, 2017. — Chapter 13 on laser optics and Gaussian beam propagation.</li>
+  <li>A. E. Siegman, <em>Lasers</em>, University Science Books, 1986. — The definitive reference on laser beam physics.</li>
+  <li>H. Kogelnik and T. Li, "Laser Beams and Resonators," <em>Applied Optics</em>, vol. 5, no. 10, pp. 1550–1567, 1966. — The foundational paper on ABCD matrix treatment of Gaussian beams.</li>
+</ol>
+
+<p style="text-align:center; margin-top:48px; color: var(--accent); font-size: 0.9em;">
+  GaussLab is free and open-source. No server needed — all calculations run in your browser.
+</p>
+</div>
+
+<script>
+function toggleTheme() {
+  const el = document.documentElement;
+  const current = el.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  el.setAttribute('data-theme', next);
+  document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+}
+// Respect system preference on load
+if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  document.documentElement.setAttribute('data-theme', 'dark');
+  document.querySelector('.theme-toggle').textContent = '☀️';
+}
+</script>
+</body>
+</html>
