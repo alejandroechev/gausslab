@@ -13,6 +13,7 @@ import { BeamInput } from './BeamInput.js';
 import { SystemBuilder } from './SystemBuilder.js';
 import { BeamDiagram } from './BeamDiagram.js';
 import { ResultsPanel } from './ResultsPanel.js';
+import { FeedbackModal } from './FeedbackModal.js';
 import { SAMPLES } from './samples/index.js';
 
 type ElementDef = { type: string; param: number; param2?: number };
@@ -77,6 +78,7 @@ export default function App() {
   const [waistPosition, setWaistPosition] = useState(savedState?.waistPosition ?? 0);
   const [elementDefs, setElementDefs] = useState<ElementDef[]>(savedState?.elementDefs ?? DEFAULT_ELEMENTS);
   const openFileRef = useRef<HTMLInputElement>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   // Debounced persistence
   useEffect(() => {
@@ -178,9 +180,11 @@ export default function App() {
         </select>
         <div className="spacer" />
         <button onClick={() => window.open('/intro.html', '_blank')} title="Domain guide">📖 Guide</button>
-        <button onClick={() => window.open('https://github.com/alejandroechev/gausslab/issues/new', '_blank')} title="Feedback">💬 Feedback</button>
+        <button onClick={() => setShowFeedback(true)} title="Feedback">💬 Feedback</button>
+        <a href="https://github.com/alejandroechev/gausslab" target="_blank" rel="noopener" className="github-link">GitHub</a>
         <button onClick={toggleTheme}>{theme === 'light' ? '🌙' : '☀️'}</button>
       </div>
+      <FeedbackModal open={showFeedback} onClose={() => setShowFeedback(false)} product="GaussLab" />
       <div className="main-layout">
         <div className="panel">
           <BeamInput
