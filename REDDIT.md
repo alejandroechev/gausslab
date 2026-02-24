@@ -12,7 +12,7 @@ Built a free web app for Gaussian beam propagation using the ABCD matrix method.
 
 Handles complex beam parameter transformation — enter your input beam wavelength and waist, add optical elements, and see how the beam evolves. Great for designing beam expanders, telescopes, and laser delivery systems.
 
-No Zemax needed for basic beam propagation. No install, no login, open source.
+Open source and runs in the browser with no install required.
 
 🔗 **Live:** https://gausslab.vercel.app
 📂 **Source:** https://github.com/alejandroechev/gausslab
@@ -29,7 +29,7 @@ Would love feedback from optical engineers — what features would make this use
 
 I built a free browser-based tool for Gaussian beam propagation. Define an optical train with lenses, mirrors, free space, and flat interfaces — it computes the complex beam parameter at every point using ABCD matrix multiplication.
 
-Shows beam radius evolution, waist locations, Rayleigh ranges. Useful for quick optical system design without firing up Zemax.
+Shows beam radius evolution, waist locations, and Rayleigh ranges for quick optical system design checks.
 
 🔗 https://gausslab.vercel.app
 📂 https://github.com/alejandroechev/gausslab
@@ -52,3 +52,4 @@ No install, no account, open source. Handy for teaching optics or quick lab calc
 📂 https://github.com/alejandroechev/gausslab
 
 Feedback welcome — especially from people teaching or doing lab optics.
+
